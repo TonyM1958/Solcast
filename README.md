@@ -11,7 +11,7 @@ A template [template_private.py](template_private.py) is provided needs to be ed
 To use this project to forecast your solar yield, you will need to:
 
 + Register a hobbyist account at https://solcast.com.au
-+ Create and API access key and make a note of this
++ Create an API access key for your account and make a note of this
 + Create and configure a solar array for each string (by default, the hobbyist account is limited to 2 arrays)
 + Make a note of the resource id (rid) for each array
 + Create a folder in HA (e.g. /config/notebooks/Solcast), download the files from github and save them to this folder
