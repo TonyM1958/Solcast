@@ -1,5 +1,5 @@
-# SOlcast Solar Forecast
-This project loads, aggregates and displays solar yield actuals and forcasts from http://solcast.com.au over a number of days (maximum forecast available is 7 days ahead).
+# Solcast Daily Solar Forecast
+This project loads, aggregates and displays solar yield estimates and forcasts from http://solcast.com.au over a number of days (6 days past, 7 days ahead).
 
 It uses Python for loading and analysis and Jupyter Lab for display. Jupyter Lab provides a flexible way for users to build simple scripts to analyse data that is specific to them.
 
@@ -10,10 +10,11 @@ A template [template_private.py](template_private.py) is provided needs to be ed
 
 To use this project to forecast your solar yield, you will need to:
 
-+ Register for a hobbyist account at https://solcast.com.au
-+ Create and configure a solar array for each string (by default, the hobbyist account is limited to 2 arrays)
++ Register a hobbyist account at https://solcast.com.au
 + Create and API access key and make a note of this
++ Create and configure a solar array for each string (by default, the hobbyist account is limited to 2 arrays)
 + Make a note of the resource id (rid) for each array
-+ Create a folder in HA, download the code and save it to the folder e.g. /config/notebooks/Solcast
-+ Create a file called private.py in the folder (using template_private.py) and enter your solcast api key and rids into file private
-+ Load the Jupyter notebook (forecast.ipynb) and run the forecast
++ Create a folder in HA (e.g. /config/notebooks/Solcast), download the files from github and save them to this folder
++ Create a file called 'private.py' in the folder (copy and edit 'template_private.py')
++ Enter your solcast api key and rids into 'private.py'
++ Open the Jupyter notebook (forecast.ipynb) and run the forecast
