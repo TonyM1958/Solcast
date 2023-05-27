@@ -42,15 +42,14 @@ def c_float(n):
 solcast_url = 'https://api.solcast.com.au/'
 solcast_credentials = None
 solcast_rids = []
-solcast_save = None
+solcast_save = 'solcast.json'
 solcast_cal = 1.0
-solcast_threshold = None
 
 def solcast_setting(api_key = None, url = None, rids = None, save = None, cal = None, th = None, debug=None) :
     """
     Load account settings to use
     """ 
-    global debug_setting, solcast_url, solcast_credentials, solcast_rids, solcast_save, solcast_cal, solcast_threshold
+    global debug_setting, solcast_url, solcast_credentials, solcast_rids, solcast_save, solcast_cal
     if debug is not None :
         debug_setting = debug
         if debug_setting > 1 :
@@ -75,10 +74,6 @@ def solcast_setting(api_key = None, url = None, rids = None, save = None, cal = 
         solcast_cal = cal
         if debug_setting > 0 :
             print(f"Solcast calibration factor: {solcast_cal}")
-    if th is not None :
-        solcast_threshold = th
-        if debug_setting > 0 :
-            print(f"Solcast threshold: {solcast_threshold}")
     return
 
 class Solcast :
@@ -102,13 +97,13 @@ class Solcast :
             f.close()
             if len(self.data) == 0:
                 print(f"No data in {solcast_save}")
-            elif reload == 2 and hasattr(self.data, 'date') and self.data['date'] != self.today:
+            elif reload == 2 and 'date' in self.data and self.data['date'] != self.today:
                 self.data = {}
             elif debug_setting > 0:
-                print(f"Using data from {solcast_save}")
+                print(f"Using data for {self.data['date']} from {solcast_save}")
         if len(self.data) == 0 :
             if debug_setting > 0:
-                print(f"Loading data from solcast.com.au for {today}")
+                print(f"Loading data from solcast.com.au for {self.today}")
             self.data['date'] = self.today
             params = {'format' : 'json', 'hours' : 168, 'period' : 'PT30M'}     # always get 168 x 30 min values
             for t in data_sets :
@@ -154,13 +149,12 @@ class Solcast :
         if self.days > 0 :
             self.avg = self.total / self.days
         self.cal = solcast_cal
-        self.threshold = solcast_threshold
         return
 
     def __str__(self) :
         # return printable Solcast info
         global debug_setting
-        s = f'\nSolcast yield for {self.days} days'
+        s = f'Solcast yield for {self.days} days'
         if self.cal is not None and self.cal != 1.0 :
             s += f", calibration = {self.cal}"
         s += f" (E = estimated, F = forecasts):\n\n"
@@ -177,7 +171,7 @@ class Solcast :
                     print(f" ** {k} rid {r} should have 48 x 30 min values. {n} values found")
         return s
 
-    def plot_daily(self, th = None) :
+    def plot_daily(self) :
         if not hasattr(self, 'daily') :
             print(f"** no daily data available")
             return
@@ -197,11 +191,7 @@ class Solcast :
         # annotations
         if hasattr(self, 'avg') :
             plt.axhline(self.avg, color='blue', linestyle='solid', label=f'average {self.avg:.1f} kwh / day', linewidth=2)
-        if th is not None :
-            self.threshold = th
-        if self.threshold is not None and self.threshold > 0 :
-            plt.axhspan(0, th, color='red', alpha=0.1, label='threshold')
-        title = f"Solcast yield for {self.days} days"
+        title = f"Solcast yield on {self.today} for {self.days} days"
         if self.cal != 1.0 :
             title += f" (calibration = {self.cal})"
         title += f". Total yield = {self.total:.0f} kwh"    
