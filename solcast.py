@@ -164,7 +164,7 @@ class Solcast :
             d = datetime.datetime.strptime(k, '%Y-%m-%d').strftime('%A')[:3]
             s += "\033[1m--> " if k == self.today else "    "
             s += f"{k} {d} {tag}: {y:5.2f} kwh"
-            s += " <--\033[0m\n" if k == self.today else "\n"
+            s += "\033[0m\n" if k == self.today else "\n"
             for r in self.rids :
                 n = len(self.daily[k][r])
                 if n != 48 and debug_setting > 0:
@@ -201,3 +201,18 @@ class Solcast :
         plt.xticks(rotation=45, ha='right')
         plt.show()
         return
+
+##################################################################################################
+# pvoutput for 
+##################################################################################################
+
+def put_pvoutput(api_key, system_id, d, g, e, c, i):
+    headers = {'X-Pvoutput-Apikey': api_key, 'X-Pvoutput-SystemId': system_id, 'Content-Type': 'application/x-www-form-urlencoded'}
+    data = f"data={d},{g},{e},,,,,,,0,{i},0,0,{c},,,,"
+    print(data)
+    response = requests.post(url="https://pvoutput.org/service/r2/addoutput.jsp", headers=headers, data=data)
+    if response.status_code != 200:
+        print(f"** put_pvoutput response code: {response.status_code}")
+        return None
+    return response
+    
